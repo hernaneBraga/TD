@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1568944359952.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1114416240",
+    "id" : "2A6F945B",
+    "lastKnownWriteTime" : 1568945949,
+    "last_content_update" : 1568945949105,
+    "path" : "D:/UFMG-sistemas/Teoria da Decisão/TD/TC1/SA.R",
+    "project_path" : "SA.R",
+    "properties" : {
+        "cursorPosition" : "47,1",
+        "scrollLine" : "23"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
