@@ -11,14 +11,6 @@ distancias <- as.matrix(read.csv(file="distancia.csv", header=FALSE, sep=","))
 #Gerando solução inicial
 #x <- solucaoinicial(distancias) #Coloca para receber uma solução inicial
 
-#######################APAGAR QUANDO TIVER O ARQUIVO SOLUÇÃO INICIAL#########
-#######POR ENQUANTO, GERA UMA COMPLETAMENTE ALEATÓRIA######################
-####A matriz x define na primeira linha as cidades na ordem em que ##########
-######serão visitadas, e na segunda o custo para a visitação dessa cidade####
-###a partir da anterior######################################################
-#se x[1,5] = 88 e x[1,6] = 100, na linha x[2,5] contém o custo para ir######
-##da cidade 88 para 100#################################################
-
 x <- matrix(0,nrow=2,ncol=250)
 iseq <- sample(250)
 x[1,1] <- 1
