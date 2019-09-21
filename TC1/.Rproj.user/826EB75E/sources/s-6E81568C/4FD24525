@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1569093505588.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "4FD24525",
+    "lastKnownWriteTime" : 1569092277,
+    "last_content_update" : 1569092277,
+    "path" : "D:/UFMG-sistemas/Teoria da Decisão/TD/TC1/vizinhanca.R",
+    "project_path" : "vizinhanca.R",
+    "properties" : {
+        "cursorPosition" : "19,14",
+        "scrollLine" : "0"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
