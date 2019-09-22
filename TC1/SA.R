@@ -64,7 +64,7 @@ m <- 1 # Valor das iterações que serão feitas para cada temperatura
 xbest <- X # Guarda a melhor solução
 
 # Looping do SA
-while (iteracao < 10000 && Tk > 0.00001*T0 && nivel<=7){
+while (iteracao < 10000 && Tk > (0.00001*T0) && nivel<=7){
     aceitacao <- 0
     m <- 0
     menordeltaE <- Inf
@@ -111,10 +111,13 @@ while (iteracao < 10000 && Tk > 0.00001*T0 && nivel<=7){
       }
       m <- m+1 # Contador de iterações por temperatura
     }
-    
-    # Atualiza a temperatura com base na regra iterativa
-    Tk <- min(abs(menordeltaE)/abs(mean(todosdeltaE)), D0)*Tk
-    
+
+        # Atualiza a temperatura com base na regra iterativa
+    if (is.null(todosdeltaE)) {
+      Tk <- D0*Tk
+    } else {
+      Tk <- min(abs(menordeltaE)/abs(mean(todosdeltaE)), D0)*Tk}
+
     # Se não foram aceitas nenhuma solução, aumenta o nível da vizinhança
     if (aceitacao<1) {
       nivel <- nivel + 1
@@ -132,7 +135,7 @@ while (iteracao < 10000 && Tk > 0.00001*T0 && nivel<=7){
 custofinal <- sum(xbest$custo)
 
 # Limpa variáveis não mais úteis
-rm(cost1, cost2, grau, i, prob, seqi, tau)
+rm(cost1, cost2, prob, seqi)
 
 ###################################################
 ###             BLOCO DAS SOLUÇÕES              ###
