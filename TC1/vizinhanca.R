@@ -35,6 +35,8 @@ TrocaVizinhaSD <- function(solucao_atual, dados_custo, num_trocas){
     nova_solucao[prox_vizinho1,]    <- c(cidade, dados_custo[prox_vizinho1, cidade])
     nova_solucao[cidade,]           <- c(prox_vizinho2, dados_custo[cidade, prox_vizinho2])
     nova_solucao[vizinho_anterior,] <- c(prox_vizinho1, dados_custo[vizinho_anterior, prox_vizinho1])
+    
+    solucao_atual <- nova_solucao
   }
   
   return(nova_solucao)
@@ -70,6 +72,8 @@ DeslocamentoSD <- function(solucao_atual, dados_custo, num_deslocs){
     # A cidade eh inserida apos o deslocamento.
     nova_solucao[prox_vizinho1,] <- c(cidade, dados_custo[prox_vizinho1, cidade])
     nova_solucao[cidade,]        <- c(prox_vizinho2, dados_custo[cidade, prox_vizinho2])
+    
+    solucao_atual <- nova_solucao
   }
   
   return(nova_solucao)
