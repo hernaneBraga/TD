@@ -1,3 +1,11 @@
+###################################################################
+# UNIVERSIDADE FEDERAL DE MINAS GERAIS                            
+# BACHARELADO EM ENGENHARIA DE SISTEMAS                           
+# DISCIPLINA: ELE088 Teoria da Decisao                            
+# PROFESSOR: Lucas de Souza Batista                               
+# ALUNOs: Ariel Domingues, Hernane Braga e Nikolas Fantoni        
+# DATA: Setembro/2019                               
+# TC1 - Otimizacao mono-objetivo do PCV
 
 # Estruturas de vizinhanca para serem aplicadas no algoritmo Simulated Annealing (SA).
 
