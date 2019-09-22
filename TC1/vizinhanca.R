@@ -63,7 +63,7 @@ DeslocamentoSD <- function(solucao_atual, dados_custo, num_deslocs){
     nova_solucao[vizinho_anterior,] <- c(prox_vizinho1, dados_custo[vizinho_anterior, prox_vizinho1])
     
     # Ela sera deslocada 3 ou 4 posicoes para frente. O 'for' percorre o caminho para isso.
-    delta_desloc <- sample(3:4, 1)
+    delta_desloc <- sample(3:7, 1)
     for (j in 1:(delta_desloc-1)) {
       prox_vizinho1 <- solucao_atual$destino[prox_vizinho1]
     }
@@ -97,7 +97,7 @@ Inversao <- function(solucao_atual, dados_custo){
   nova_solucao[prox_vizinho1,] <- c(cidade, dados_custo[prox_vizinho1, cidade])
   
   # O for realiza o percorrimento do trecho.
-  delta_intervalo <- sample(3:4, 1)
+  delta_intervalo <- sample(3:7, 1)
   for (j in 1:(delta_intervalo-2)) {
     nova_solucao[prox_vizinho2,] <- c(prox_vizinho1, dados_custo[prox_vizinho2, prox_vizinho1])
     
@@ -128,7 +128,7 @@ TrocaIntervalada <- function(solucao_atual, dados_custo){
   vizinho_anterior_cidade2 <- prox_vizinho_cidade1
   
   # O intervalo eh percorrido pelo for.
-  delta_intervalo <- sample(3:4, 1)
+  delta_intervalo <- sample(3:7, 1)
   for (j in 1:(delta_intervalo-1)) {
     vizinho_anterior_cidade2 <- solucao_atual$destino[vizinho_anterior_cidade2]
   }
