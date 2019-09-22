@@ -1,5 +1,5 @@
 
-solucao_incial <- function(nome_arquivo, r){
+solucao_inicial <- function(nome_arquivo, r){
 # nome_arquivo: nome do .csv a ser lido e calculado
 # r: numero de cidades vizinhas que sao candidatas a serem escolhidas. 
 #    Quanto maior o valor r, maior a probabilidade da solucao inicial ser ruim

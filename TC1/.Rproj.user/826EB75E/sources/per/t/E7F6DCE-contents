@@ -1,15 +1,19 @@
 
-solucao_incial <- function(nome_arquivo, r){
+solucao_inicial <- function(nome_arquivo, r){
 # nome_arquivo: nome do .csv a ser lido e calculado
-# r: n?mero de cidades vizinhas que s?o candidatas a serem escolhidas. 
-    # Quanto maior o valor r, maior a probabilidade da solu??o inicial ser ruim
+# r: numero de cidades vizinhas que sao candidatas a serem escolhidas. 
+#    Quanto maior o valor r, maior a probabilidade da solucao inicial ser ruim
      
-# vetor_resultado: retorno da fun??o com solu??o inicial
-                   # Linha 1: ?ncide da cidade visitada
-                   # Linha 2: Custo at? a cidade a ser visitada
+# vetor_resultado: retorno da funcao com a solucao inicial - Retornado apenas linhas l2 e l3, ordenadas a partinha de l1
+                   # Linha 1: Cidade atual [i]
+                   # Linha 2: Cidade escolhida [j]
+                   # Linha 3: Custo de i ate j
 
 # Carregar dados
 {
+#nome_arquivo = "tempo.csv"
+#r <- 10
+
 dados <- as.matrix(read.csv( nome_arquivo, sep=',' ,header = FALSE ))
 dados[dados == 0] <- Inf # Define como infinito as cidades que v?o para elas mesmas.
                          # Inf tamb?m sera usada para definir se uma cidade j? foi visitada 
@@ -19,23 +23,24 @@ dados[dados == 0] <- Inf # Define como infinito as cidades que v?o para elas mes
 {
 n <- length(dados[,1])
 cidade_atual <- 1        # Cidade inicial = 1
-vetor_result <- matrix(0, nrow = 2, ncol = n)
+vetor_result <- matrix(0, nrow = 3, ncol = n)
 
 vetor_aux <- matrix(0, nrow = 2, ncol = n)
 vetor_aux[1,] <- seq(1, n, 1) 
 vetor_aux[2,] <- dados[cidade_atual, ] 
 
 vetor_aux <- vetor_aux[,order(vetor_aux[2,])] # Ordena o vetor 
-idx <- round(runif(1,1,3))  # Escolha aleat?ria entre as 3 cidades mais pr?ximas
+idx <- round(runif(1,1,r))  # Escolha aleatoria entre as r cidades mais proximas
 
-vetor_result[1,1] <- vetor_aux[1,idx] # Coloca cidade no vetor de resposta
-vetor_result[2,1] <- vetor_aux[2,idx] # Coloca custo no vetor de resposta
+vetor_result[1,1] <- cidade_atual     # indice Cidade atual [i]
+vetor_result[2,1] <- vetor_aux[1,idx] # indice da cidade escolhida [j]
+vetor_result[3,1] <- vetor_aux[2,idx] # Custo de ir de i -> j
 
 cidade_atual <- vetor_aux[1,idx]
 dados[,cidade_atual] <- Inf # Marca a cidade escolhida como visitada
 }
 
-# C?lculo da solu??o da 2? cidade at? n-1
+# Calculo da solucao da 2 cidade ate n-1
 vetor_aux <- matrix(0, nrow = 2, ncol = n-1) # Novo vetor auxiliar, excluindo a cidade 1 (inicial)
 for (i in 2:(n-1)){
 
@@ -53,15 +58,16 @@ for (i in 2:(n-1)){
   if(is.infinite(vetor_aux[2,idx]) == TRUE){ idx <- 1 } # Se solu??o for j? visita, escolhe a mais pr?xima 
 
   # Preenche vetor resposta
-  vetor_result[1,i] <- vetor_aux[1,idx] 
-  vetor_result[2,i] <- vetor_aux[2,idx]
+  vetor_result[1,i] <- cidade_atual
+  vetor_result[2,i] <- vetor_aux[1,idx] 
+  vetor_result[3,i] <- vetor_aux[2,idx]
   
   cidade_atual <- vetor_aux[1,idx]
   dados[,cidade_atual] <- Inf # Marca a cidade escolhida como visitado
 
 }
 
-# Calcula dist?ncia m?nima para a cidade restante (a cidade inicial 1)
+# Calcula distancia minima para a cidade restante ( cidade inicial 1)
 {
 vetor_aux <- matrix(0, nrow = 2, ncol = n)
 vetor_aux[1,] <- seq(1, n, 1) 
@@ -69,10 +75,15 @@ vetor_aux[2,] <- dados[cidade_atual, 1:n]
 
 vetor_aux <- vetor_aux[,order(vetor_aux[2,])] # Ordena vetor pelo valor de custo
 
-vetor_result[1,n] <- vetor_aux[1,1] 
-vetor_result[2,n] <- vetor_aux[2,1] 
+vetor_result[1,n] <- cidade_atual
+vetor_result[2,n] <- vetor_aux[1,1] 
+vetor_result[3,n] <- vetor_aux[2,1] 
+
 }
 
-return(vetor_result)
+
+vetor_result <- vetor_result[,order(vetor_result[1,])] # Ordena matriz pela linha 1
+
+return(vetor_result[2:3,]) 
 
 }
