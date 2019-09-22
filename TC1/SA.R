@@ -65,70 +65,71 @@ xbest <- X # Guarda a melhor solução
 
 # Looping do SA
 while (iteracao < 10000 && Tk > (0.00001*T0) && nivel<=7){
-    aceitacao <- 0
-    m <- 0
-    menordeltaE <- Inf
-    todosdeltaE <- NULL
+  aceitacao <- 0
+  m <- 0
+  menordeltaE <- Inf
+  todosdeltaE <- NULL
+  
+  # Faz a repetição para cada mudança na temperatura
+  while (m <= 400 && aceitacao <= 15){
+    cost1 <- sum(X$custo) # Custo da solução atual
+    x1 <- Vizinhanca(X, dados_custo, nivel) # Encontra nova solução na vizinhança
+    cost2 <- sum(x1$custo) # Custo da nova solução
+    deltaE <- cost2 - cost1 # Calcula a diferença dos custos das soluções
     
-    # Faz a repetição para cada mudança na temperatura
-    while (m <= 400 && aceitacao <= 15){
-      cost1 <- sum(X$custo) # Custo da solução atual
-      x1 <- Vizinhanca(X, dados_custo, nivel) # Encontra nova solução na vizinhança
-      cost2 <- sum(x1$custo) # Custo da nova solução
-      deltaE <- cost2 - cost1 # Calcula a diferença dos custos das soluções
-      
-      # Caso a vizinhança retorne uma solução idêntica
-      while (deltaE == 0){
-        cost1 <- sum(X$custo)
-        x1 <- Vizinhanca(X, dados_custo, nivel)
-        cost2 <- sum(x1$custo)
-        deltaE <- cost2 - cost1
+    # Caso a vizinhança retorne uma solução idêntica
+    while (deltaE == 0){
+      cost1 <- sum(X$custo)
+      x1 <- Vizinhanca(X, dados_custo, nivel)
+      cost2 <- sum(x1$custo)
+      deltaE <- cost2 - cost1
+    }
+    
+    # Se a nova solução x1 for melhor que a anterior
+    if (deltaE <= 0){
+      if (deltaE < menordeltaE) {
+        menordeltaE <- deltaE # Atualiza menor deltaE
       }
-      
-      # Se a nova solução x1 for melhor que a anterior
-      if (deltaE <= 0){
+      todosdeltaE <- c(todosdeltaE,deltaE) # Guarda todos os deltaE de soluções aceita
+      aceitacao <- aceitacao +1 # Atualiza o contador de soluções aceitas
+      X <- x1 # Atualiza a solução atual
+      if (sum(x1$custo) < sum(xbest$custo)) xbest <- x1 #Atualiza a melhor solução
+      costt <- c(costt,cost2) # Atualiza os custos encontrados
+    }
+    # Se a nova solução x1 for pior que a anterior
+    else {
+      prob <- exp(-deltaE/Tk) # Calcula a probabilidade da solução ser aceita
+      if (sample(seqi,1)<prob) { # Se for aceita, parte análoga ao caso de x1 ser melhor que X
         if (deltaE < menordeltaE) {
-          menordeltaE <- deltaE # Atualiza menor deltaE
+          menordeltaE <- deltaE
         }
-        todosdeltaE <- c(todosdeltaE,deltaE) # Guarda todos os deltaE de soluções aceita
-        aceitacao <- aceitacao +1 # Atualiza o contador de soluções aceitas
-        X <- x1 # Atualiza a solução atual
-        if (sum(x1$custo) < sum(xbest$custo)) xbest <- x1 #Atualiza a melhor solução
-        costt <- c(costt,cost2) # Atualiza os custos encontrados
+        todosdeltaE <- c(todosdeltaE,deltaE)
+        aceitacao <- aceitacao +1
+        X <- x1
+        costt <- c(costt,cost2)
       }
-      # Se a nova solução x1 for pior que a anterior
-      else {
-        prob <- exp(-deltaE/Tk) # Calcula a probabilidade da solução ser aceita
-        if (sample(seqi,1)<prob) { # Se for aceita, parte análoga ao caso de x1 ser melhor que X
-          if (deltaE < menordeltaE) {
-            menordeltaE <- deltaE
-          }
-          todosdeltaE <- c(todosdeltaE,deltaE)
-          aceitacao <- aceitacao +1
-          X <- x1
-          costt <- c(costt,cost2)
-        }
-      }
-      m <- m+1 # Contador de iterações por temperatura
     }
-
-        # Atualiza a temperatura com base na regra iterativa
-    if (is.null(todosdeltaE)) {
-      Tk <- D0*Tk
-    } else {
-      Tk <- min(abs(menordeltaE)/abs(mean(todosdeltaE)), D0)*Tk}
-
-    # Se não foram aceitas nenhuma solução, aumenta o nível da vizinhança
-    if (aceitacao<1) {
-      nivel <- nivel + 1
-    }
-    # Se foram aceitas quaisquer soluções, volta para a vizinhança de nível mais baixo
-    # para tentar uma busca local
-    if (aceitacao >= 1){
-      nivel <- 1
-    }
-    
-    iteracao <- iteracao + 1 # Incrementa a iteração total do algoritmo
+    m <- m+1 # Contador de iterações por temperatura
+  }
+  
+  # Atualiza a temperatura com base na regra iterativa
+  if (is.null(todosdeltaE)) {
+    Tk <- D0*Tk
+  } else {
+    Tk <- min(abs(menordeltaE)/abs(mean(todosdeltaE)), D0)*Tk
+  }
+  
+  # Se não foram aceitas nenhuma solução, aumenta o nível da vizinhança
+  if (aceitacao<1) {
+    nivel <- nivel + 1
+  }
+  # Se foram aceitas quaisquer soluções, volta para a vizinhança de nível mais baixo
+  # para tentar uma busca local
+  if (aceitacao >= 1){
+    nivel <- 1
+  }
+  
+  iteracao <- iteracao + 1 # Incrementa a iteração total do algoritmo
 }
 
 # Salva o custo final da melhor solução encontrada
