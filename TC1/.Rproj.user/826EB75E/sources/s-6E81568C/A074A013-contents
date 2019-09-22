@@ -1,0 +1,26 @@
+
+#Segunda solucao inicial
+X<-list()
+X[[1]] <- sample(2:250,1)
+X[[2]] <- as.numeric(distancias[1,X[[1]]])
+listapossiveis <- 2:250
+listapossiveis <- listapossiveis[-(X[[1]][1]-1)]
+names(X) <- c("destino", "custo")
+custosi <- list()
+
+for (i in 1:248){
+  custosi[[1]] <- as.numeric(distancias[X[[1]][i],listapossiveis])
+  ordem <- order(custosi[[1]])
+  custosi[[1]] <- custosi[[1]][ordem]
+  custosi[[2]] <- listapossiveis[ordem]
+  indice <- custosi[[2]][1]
+  X[[1]] <- c(X[[1]],indice)
+  X[[2]] <- c(X[[2]],custosi[[1]][1])
+  listapossiveis <- listapossiveis[-which(listapossiveis==indice)]
+}
+X[[1]] <- c(X[[1]],1)
+X[[2]] <- c(X[[2]],as.numeric(distancias[X[[1]][249],1]))
+rm(custosi,indice, listapossiveis, ordem)
+
+custo <- sum(X[[2]])
+X <- data.frame(X)

@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1569131770813.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "4EFAFAAB",
+    "lastKnownWriteTime" : 1569106600,
+    "last_content_update" : 1569106600,
+    "path" : "D:/UFMG-sistemas/Teoria da Decisão/TD/TC1/solucao_inicial_2.R",
+    "project_path" : "solucao_inicial_2.R",
+    "properties" : {
+        "cursorPosition" : "11,0",
+        "scrollLine" : "0"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

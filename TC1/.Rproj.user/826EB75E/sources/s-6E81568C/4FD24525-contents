@@ -133,6 +133,16 @@ TrocaIntervalada <- function(solucao_atual, dados_custo){
 }
 
 ###################################################################################################
+# Funcao de nivel de perturbacao 7. A cidade com maior custo é retirada da solução e reinserida entre
+# duas outras cidades que possuem o menor custo.
+solucao_atual <- X
+
+DropCheap <- function(solucao_atual, dados_custo){
+  nova_solucao$custo <- solucao_atual$custo[order(solucao_atual$custo)]
+}
+
+
+###################################################################################################
 # Funcao que escolhera qual nivel de perturbacao utilizar. Para chama-la, o parametro nivel deve ser
 # passado de 1 a 6, em ordem crescente de perturbacao. Passa-se uma solucao e os dados de custo como
 # parametro e, dado o nivel, ela chama uma das estruturas de vizinhanca, que obtem uma nova solucao.
