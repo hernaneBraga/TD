@@ -45,10 +45,11 @@ TrocaVizinhaSD <- function(solucao_atual, dados_custo, num_trocas){
 ##################################################################################################
 # Funcao de nivel de perturbacao 2 ou 6, dependendo do numero de deslocamentos (num_deslocs).
 # As letras 'SD' referem-se a 'Simples' e 'Duplo', assim como a funcao anterior. A(s) cidade(s) 
-# eh(sao) escolhida(s) aleatoriamente e sofrem um deslocamento para frente de 3 ou 4 cidades 
+# eh(sao) escolhida(s) aleatoriamente e sofrem um deslocamento para frente de 3 a 7 cidades 
 # (50% de chance para cada um). Ou seja, se a ordem do caminho for A > B > C > D > E > F, e B  
 # eh a cidade escolhida, entao B eh deslocada e a ordem passa a ser A > C > D > E > B > F ou 
-# A > C > D > E > F > B. O numero de deslocamentos definira quantos serao feitos de uma vez (1 ou 2).
+# A > C > D > E > F > B, por exemplo. O numero de deslocamentos definira quantos serao feitos 
+# de uma vez (1 ou 2).
 
 DeslocamentoSD <- function(solucao_atual, dados_custo, num_deslocs){
   nova_solucao <- solucao_atual
@@ -81,9 +82,9 @@ DeslocamentoSD <- function(solucao_atual, dados_custo, num_deslocs){
 
 ###################################################################################################
 # Funcao de niel de perturbacao 3. Uma cidade eh escolhida aleatoriamente e tem o trecho subsequente
-# de 3 ou 4 cidades invertido. Ou seja, de o caminho for A > B > C > D > E > F, e B eh a cidade 
+# de 3 a 7 cidades invertido. Ou seja, de o caminho for A > B > C > D > E > F, e B eh a cidade 
 # escolhida, entao o caminho seguinte a B eh invertido de forma a se tornar A > D > C > B > E > F ou 
-# A > E > D > C > B > F.
+# A > E > D > C > B > F, por exemplo.
 
 Inversao <- function(solucao_atual, dados_custo){
   nova_solucao <- solucao_atual
@@ -114,9 +115,9 @@ Inversao <- function(solucao_atual, dados_custo){
 
 ###################################################################################################
 # Funcao de nivel de perturbacao 5. Uma cidade eh escolhida aleatoriamente e eh trocada de lugar
-# com outra cidade a sua frente com um intervalo de 3 ou 4 cidades entre elas. Ou seja, se o caminho
+# com outra cidade a sua frente com um intervalo de 3 a 7 cidades entre elas. Ou seja, se o caminho
 # for A > B > C > D > E > F > G, e B eh a cidade escolhida, entao ocorre a troca e o novo caminho passa
-# a ser A > F > C > D > E > B > G ou A > G > C > D > E > F > B.
+# a ser A > F > C > D > E > B > G ou A > G > C > D > E > F > B, por exemplo.
 
 TrocaIntervalada <- function(solucao_atual, dados_custo){
   nova_solucao <- solucao_atual
