@@ -58,13 +58,13 @@ seqi <- seq(0.00001,1,0.00001) # Usada para sortear um valor
 costt <- custoinicial # Guarda os custos ao longo do algoritmo
 iteracao <- 0 # Valor das iterações totais feitas
 nivel <- 1 # Nível de perturbação vizinhança inicial (quanto maior, maior a diferença entre as soluções)
-D0 <- 0.5 # Variação da temperatura inicial estática
+D0 <- 0.7 # Variação da temperatura inicial estática
 Tk <- T0 # Próxima temperatura
 m <- 1 # Valor das iterações que serão feitas para cada temperatura
 xbest <- X # Guarda a melhor solução
 
 # Looping do SA
-while (iteracao < 10000 && Tk > (0.00001*T0) && nivel<=7){
+while (iteracao < 1000 && Tk > (0.00001*T0) && nivel<=6){
   aceitacao <- 0
   m <- 0
   menordeltaE <- Inf
