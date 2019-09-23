@@ -145,49 +145,6 @@ TrocaIntervalada <- function(solucao_atual, dados_custo){
   return(nova_solucao)
 }
 
-#############################################################################################
-# Funcao de nivel de perturbacao 7. Não estocástica (entrega a mesma saída independente da
-# entrada. Muda MUITO a solução.
-
-DropCheap <- function(solucao_atual, dados_custo){
- solucao_atual <- X
- dados_custo <- distancias
- nova_solucao <- solucao_atual
- maxcidade <- max(which(solucao_atual$custo == max(solucao_atual$custo)))
- if(maxcidade ==1){
-   maxcidade <- sample(2:250,1)
- }
- vizinho_anterior <- which(solucao_atual$destino==maxcidade)
- prox_vizinho <- solucao_atual$destino[maxcidade]
- nova_solucao$destino[vizinho_anterior] <- prox_vizinho
- nova_solucao$custo[vizinho_anterior] <- dados_custo[vizinho_anterior, prox_vizinho]
- 
- solucaosemcidademax <- nova_solucao
- prox_vizinho <- nova_solucao$destino[1]
- nova_solucao$destino[1] <- maxcidade
- nova_solucao$custo[1] <- dados_custo[1,maxcidade]
- nova_solucao$destino[maxcidade] <- prox_vizinho
- nova_solucao$custo[maxcidade] <- dados_custo[maxcidade, prox_vizinho]
- custo1 <- sum(nova_solucao$custo)
- seq <- 2:250
- seq <- seq[-which(seq==maxcidade)]
- for (i in seq){
-   outrasolucao <- solucaosemcidademax
-   outrasolucao$destino[i] <- maxcidade
-   outrasolucao$custo[i] <- dados_custo[i,maxcidade]
-   outrasolucao$destino[maxcidade] <- prox_vizinho
-   outrasolucao$custo[maxcidade] <- dados_custo[maxcidade, prox_vizinho]
-   custo2 <- sum(outrasolucao$custo)
-   if(custo2 < custo1) nova_solucao <- outrasolucao
-   custo1 <- custo2
- }
- 
- return(nova_solucao)
-}
-
-
-
-
 ####################################################################################################
 # Funcao que escolhera qual nivel de perturbacao utilizar. Para chama-la, o parametro nivel deve ser
 # passado de 1 a 6, em ordem crescente de perturbacao. Passa-se uma solucao e os dados de custo como
@@ -200,7 +157,6 @@ Vizinhanca <- function(solucao_atual, dados_custo, nivel){
     Inversao(solucao_atual, dados_custo),          # nivel 3
     TrocaVizinhaSD(solucao_atual, dados_custo, 2), # nivel 4 - Troca vizinha dupla
     TrocaIntervalada(solucao_atual, dados_custo),  # nivel 5
-    DeslocamentoSD(solucao_atual, dados_custo, 2), # nivel 6 - Deslocamento duplo
-    DropCheap(solucao_atual,dados_custo)           # nivel 7 - DropCheap
+    DeslocamentoSD(solucao_atual, dados_custo, 2) # nivel 6 - Deslocamento duplo
   )
 }
