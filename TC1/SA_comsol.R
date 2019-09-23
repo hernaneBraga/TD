@@ -36,6 +36,11 @@ custoinicial <- sum(X$custo) #define custo inicial
 # cat("Custo inicial: ", custoinicial, ".\n")
 rm(grau)
 
+X$destino <- c(sample(2:250),1)
+for (i in 1:250){
+X$custo[i] <- (dados_custo[i,X$destino[i]])
+}
+custoinicial <- sum(X$custo)
 ###################################################
 ###       BLOCO DA TEMPERATURA INICIAL          ###
 ###################################################
@@ -49,7 +54,7 @@ deltaE <- NULL
 for (i in 1:100){
   deltaE <- c(deltaE,(abs((sum(Vizinhanca(X, dados_custo, 1)$custo))) - (sum(X$custo))))
 }
-T0 <- -mean(deltaE)/(log(tau))
+T0 <- mean(deltaE)/(log(tau))
 rm(tau, i, deltaE)
 
 ###################################################
@@ -146,11 +151,11 @@ rm(cost1, cost2, prob, seqi)
 ###             BLOCO DAS SOLUÇÕES              ###
 ###################################################
 # Plota custos e imprime o custo final e o custo inicial
-plot(1:length(costt), costt,type="l", xlab="",ylab="Custo(km)", xlim=c(0,210), ylim=c(1460,1730), col=cores[w], main="Evolução do custo ao longo do algoritmo SA")
+plot(1:length(costt), costt,type="l", xlab="",ylab="Custo(km)", xlim=c(0,220), ylim=c(1480,1760), col=cores[w], main="Evolução do custo ao longo do algoritmo SA")
 par(new=T)
 custosfinais <- c(custosfinais,custofinal)
 }
-legend(165,1735,legend=c("iteração 1", "iteração 2", "iteração 3", "iteração 4", "iteração 5"),
+legend(170,1770,legend=c("iteração 1", "iteração 2", "iteração 3", "iteração 4", "iteração 5"),
        lty=c(1,1,1,1,1), col=cores, lwd=2, bty="n", cex=0.70, xjust=0)
 cat("Custo inicial: ", custoinicial, ".\n")
 cat("Custo final: ", custofinal,".\n")
