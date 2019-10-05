@@ -4,8 +4,8 @@
 # DISCIPLINA: ELE088 Teoria da Decisao                            
 # PROFESSOR: Lucas de Souza Batista                               
 # ALUNOs: Ariel Domingues, Hernane Braga e Nikolas Fantoni        
-# DATA: Setembro/2019                               
-# TC1 - Otimizacao mono-objetivo do PCV
+# DATA: Outubro/2019                               
+# TC1 - Otimizacao multi-objetivo do PCV
 
 solucao_inicial <- function(nome_arquivo, r){
 # nome_arquivo: nome do .csv a ser lido e calculado

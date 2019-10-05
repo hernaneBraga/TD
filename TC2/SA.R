@@ -1,7 +1,19 @@
-SA <- function(X, tau ){
-  
+###################################################################
+# UNIVERSIDADE FEDERAL DE MINAS GERAIS                            
+# BACHARELADO EM ENGENHARIA DE SISTEMAS                           
+# DISCIPLINA: ELE088 Teoria da Decisao                            
+# PROFESSOR: Lucas de Souza Batista                               
+# ALUNOs: Ariel Domingues, Hernane Braga e Nikolas Fantoni        
+# DATA: Outubro/2019                               
+# TC1 - Otimizacao multi-objetivo do PCV
+
+# O algoritmo abaixo realiza o SA para uma dada solução inicial X
+SA <- function(X, dados_custo){
+
+custoinicial <- sum(X$custo)
 # Calcula a temperatura inicial T0 com base na fórmula
 # e^-média(deltaE)/T0 = tau
+tau = 0.5
 deltaE <- NULL
 for (i in 1:100){
   deltaE <- c(deltaE,(abs((sum(Vizinhanca(X, dados_custo, 1)$custo))) - (sum(X$custo))))

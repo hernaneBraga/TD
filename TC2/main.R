@@ -4,8 +4,8 @@
 # DISCIPLINA: ELE088 Teoria da Decisao                            
 # PROFESSOR: Lucas de Souza Batista                               
 # ALUNOs: Ariel Domingues, Hernane Braga e Nikolas Fantoni        
-# DATA: Setembro/2019                               
-# TC1 - Otimizacao mono-objetivo do PCV
+# DATA: Outubro/2019                               
+# TC1 - Otimizacao multi-objetivo do PCV
 
 # O algoritmo abaixo pode ser rodado como um todo ou em blocos, conforme dividido a seguir.
 # É aconselhável a limpeza do ambiente antes da execução do algoritmo, usando a função abaixo.
@@ -17,37 +17,44 @@ rm(list=ls())
 source('solucao_inicial.R')
 source('vizinhanca.R')
 source('SA.R')
-dados_custo <- as.matrix(read.csv(file="distancia.csv", header=FALSE, sep=","))
+dados_custo_distancia <- as.matrix(read.csv(file="distancia.csv", header=FALSE, sep=","))
+dados_custo_tempo <- as.matrix(read.csv(file="tempo.csv", header=FALSE, sep=","))
 
 
 ###################################################
-###           BLOCO DA SOLUÇÃO INICIAL          ###
+###          BLOCO DAS SOLUÇÕES INICIAIS        ###
 ###################################################
 
-# Define o grau de variabilidade da solução inicial (número inteiro).
+# Define o grau de variabilidade das soluções iniciais (número inteiro).
 # Valores menores significam uma solução mais próxima da solução obtida
 # a partir de um algoritmo guloso.
 
 grau <- 1
-X <- t(solucao_inicial("distancia.csv",grau))
-colnames(X) <- c("destino", "custo")
-X <- data.frame(X)
-custoinicial <- sum(X$custo) #define custo inicial
+Xd <- t(solucao_inicial("distancia.csv",grau))
+colnames(Xd) <- c("destino", "custo")
+Xt <- t(solucao_inicial("tempo.csv",grau))
+colnames(Xt) <- c("destino", "custo")
+Xd <- data.frame(Xd)
+Xt <- data.frame(Xt)
+initcost_t <- sum(Xt$custo) #define custo inicial para o tempo
+initcost_d <- sum(Xd$custo) #define custo inicial para a distância
 # Para imprimir o custo inicial
-# cat("Custo inicial: ", custoinicial, ".\n")
+# cat("Custo inicial para o tempo: ", initcost_t, "h.\nCusto inicial para a distância: ", initcost_d,"km. \n")
 
 ###################################################
-###       BLOCO DO SIMULATED ANNEALING          ###
+###     BLOCO DO SIMULATED ANNEALING INICIAL    ###
 ###################################################
 
 # Realiza o SA
-xbest <- SA(X=X,tau=0.5)
+xbest_t <- SA(X=Xt,dados_custo_tempo)
+xbest_d <- SA(X=Xd,dados_custo_distancia)
 
 # Salva o custo final da melhor solução encontrada
-custofinal <- sum(xbest$custo)
+custod <- sum(xbest_d$custo)
+custot <- sum(xbest_t$custo)
 
 # Limpa variáveis não mais úteis
-rm(cost1, cost2, prob, seqi)
+rm(grau,Xd, Xt)
 
 ###################################################
 ###             BLOCO DAS SOLUÇÕES              ###
