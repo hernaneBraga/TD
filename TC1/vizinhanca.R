@@ -45,7 +45,7 @@ TrocaVizinhaSD <- function(solucao_atual, dados_custo, num_trocas){
 ##################################################################################################
 # Funcao de nivel de perturbacao 2 ou 6, dependendo do numero de deslocamentos (num_deslocs).
 # As letras 'SD' referem-se a 'Simples' e 'Duplo', assim como a funcao anterior. A(s) cidade(s) 
-# eh(sao) escolhida(s) aleatoriamente e sofrem um deslocamento para frente de 3 a 7 cidades 
+# eh(sao) escolhida(s) aleatoriamente e sofrem um deslocamento para frente de 2 a 5 cidades 
 # (distribuicao uniforme). Ou seja, se a ordem do caminho for A > B > C > D > E > F, e B  
 # eh a cidade escolhida, entao B eh deslocada e a ordem passa a ser A > C > D > E > F > B,
 # se o deslocamento for de 4 cidades por exemplo. O numero de deslocamentos definira quantos serao 
@@ -63,8 +63,8 @@ DeslocamentoSD <- function(solucao_atual, dados_custo, num_deslocs){
     # A cidade escolhida eh retirada do caminho.
     nova_solucao[vizinho_anterior,] <- c(prox_vizinho1, dados_custo[vizinho_anterior, prox_vizinho1])
     
-    # Ela sera deslocada 3 a 7 posicoes para frente. O 'for' percorre o caminho para isso.
-    delta_desloc <- sample(3:7, 1)
+    # Ela sera deslocada 2 a 5 posicoes para frente. O 'for' percorre o caminho para isso.
+    delta_desloc <- sample(2:5, 1)
     for (j in 1:(delta_desloc-1)) {
       prox_vizinho1 <- solucao_atual$destino[prox_vizinho1]
     }
@@ -82,7 +82,7 @@ DeslocamentoSD <- function(solucao_atual, dados_custo, num_deslocs){
 
 ###################################################################################################
 # Funcao de niel de perturbacao 3. Uma cidade eh escolhida aleatoriamente e tem o trecho subsequente
-# de 3 a 7 cidades invertido. Ou seja, de o caminho for A > B > C > D > E > F, e B eh a cidade 
+# de 2 a 15 cidades invertido. Ou seja, de o caminho for A > B > C > D > E > F, e B eh a cidade 
 # escolhida, entao o caminho seguinte a B eh invertido de forma a se tornar A > E > D > C > B > F,
 # se o trecho for de 4 cidades por exemplo.
 
@@ -98,7 +98,7 @@ Inversao <- function(solucao_atual, dados_custo){
   nova_solucao[prox_vizinho1,] <- c(cidade, dados_custo[prox_vizinho1, cidade])
   
   # O for realiza o percorrimento do trecho.
-  delta_intervalo <- sample(3:7, 1)
+  delta_intervalo <- sample(2:15, 1)
   for (j in 1:(delta_intervalo-2)) {
     nova_solucao[prox_vizinho2,] <- c(prox_vizinho1, dados_custo[prox_vizinho2, prox_vizinho1])
     
@@ -115,7 +115,7 @@ Inversao <- function(solucao_atual, dados_custo){
 
 ###################################################################################################
 # Funcao de nivel de perturbacao 5. Uma cidade eh escolhida aleatoriamente e eh trocada de lugar
-# com outra cidade a sua frente com um intervalo de 3 a 7 cidades entre elas. Ou seja, se o caminho
+# com outra cidade a sua frente com um intervalo de 2 a 7 cidades entre elas. Ou seja, se o caminho
 # for A > B > C > D > E > F > G, e B eh a cidade escolhida, entao ocorre a troca e o novo caminho passa
 # a ser A > G > C > D > E > F > B, se o intervalo for de 4 cidades por exemplo.
 
@@ -129,7 +129,7 @@ TrocaIntervalada <- function(solucao_atual, dados_custo){
   vizinho_anterior_cidade2 <- prox_vizinho_cidade1
   
   # O intervalo eh percorrido pelo for.
-  delta_intervalo <- sample(3:7, 1)
+  delta_intervalo <- sample(2:7, 1)
   for (j in 1:(delta_intervalo-1)) {
     vizinho_anterior_cidade2 <- solucao_atual$destino[vizinho_anterior_cidade2]
   }
