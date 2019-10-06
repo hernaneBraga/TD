@@ -8,7 +8,7 @@
 # TC2 - Otimizacao multi-objetivo do PCV
 
 # O algoritmo abaixo pode ser rodado como um todo ou em blocos, conforme dividido a seguir.
-# Ã aconselhÃ¡vel a limpeza do ambiente antes da execuÃ§Ã£o do algoritmo, usando a funÃ§Ã£o abaixo.
+#  aconselhável a limpeza do ambiente antes da execução do algoritmo, usando a funÃ§Ã£o abaixo.
 rm(list=ls())
 
 # Importando Bibliotecas, arquivos necessÃ¡rios e os dados
@@ -16,6 +16,7 @@ rm(list=ls())
 # serÃ£o utilizados na otimizacao.
 source('solucao_inicial.R')
 source('vizinhanca2.R')
+source('ConfereDominancia.R')
 dados_tempo <- as.matrix(read.csv(file="tempo.csv", header=FALSE, sep=","))
 dados_distancia <- as.matrix(read.csv(file="distancia.csv", header=FALSE, sep=","))
 
@@ -60,7 +61,7 @@ X[,2] <- X[,3]
 X[,3] <- dtemp
 colnames(X) <- c("destino", "custotempo", "custodistancia")
 X <- data.frame(X)
-X$custotempo[1] <- dados_tempo[1,X$destino[1]] #corrige funÃ§Ã£o do hernane
+X$custotempo[1] <- dados_tempo[1,X$destino[1]] #corrige um valor da solução inicial
 
 custoinicial_tempo <- sum(X$custotempo)
 custoinicial_distancia <- sum(X$custodistancia)
@@ -71,7 +72,7 @@ w <- c(wt, wd)
 
 superficie_best <- array(0, c(2, 40))
 
-for (j in 1:40) {
+for (j in 1:100) {
   
 f <- fnormalizada(X, min, max)
 f <- wt*f[1]+wd*f[2]
@@ -85,7 +86,7 @@ custoinicial_norm <- f
 tau <- 0.5
 grau <- 1
 deltaE <- NULL
-for (i in 1:100){
+for (i in 1:40){
   flinha <- fnormalizada(Vizinhanca(X, dados_tempo, dados_distancia, 1), min, max)
   deltaE <- c(deltaE,(abs(wt*flinha[1]+wd*flinha[2]) - f))
 }
@@ -209,4 +210,8 @@ superficie_best[,j] <- c(sum(xbest$custotempo), sum(xbest$custodistancia))
 
 }
 
-plot(superficie_best[1,], superficie_best[2,], xlab = "Custo tempo", ylab = "Custo distancia")
+#Superfície Pareto Ótima
+superficie_best_semdominancia <- ConfereDominancia(superficie_best)
+plot(superficie_best_semdominancia[1,], superficie_best_semdominancia[2,], xlab = "Custo tempo", ylab = "Custo distancia", main="Superfície pareto Ótima")
+par(new=T)
+plot(superficie_best_semdominancia[1,], superficie_best_semdominancia[2,], type='l', xlab = "Custo tempo", ylab = "Custo distancia", main="Superfície Pareto Ótima")
