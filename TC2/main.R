@@ -49,7 +49,7 @@ rm(grau,dtemp)
 ###################################################
 # Realiza o SA
 solution <- SAmulti(X,dados_custo_tempo, dados_custo_distancia,0.5,0.5)
-xbest <- solutuion[[1]] # Melhor solução encontrada
+xbest <- solution[[1]] # Melhor solução encontrada
 custos <- solution[[2]] # Variação do custo ao longo das iterações
 
 #Plota os custos
