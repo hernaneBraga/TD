@@ -14,9 +14,10 @@ rm(list=ls())
 # Importando Bibliotecas, arquivos necessários e os dados
 # Aqui deve ser definido se o arquivo distancia.csv ou o arquivo tempo.csv
 # serão utilizados na otimizacao.
-source('solucao_inicial.R')
-source('vizinhanca.R')
-source('SA.R')
+source('solucao_inicial_dst_tempo.R')
+source("solucao_inicial_gulosa.R")
+source('vizinhanca2.R')
+source('SAmulti.R')
 dados_custo_distancia <- as.matrix(read.csv(file="distancia.csv", header=FALSE, sep=","))
 dados_custo_tempo <- as.matrix(read.csv(file="tempo.csv", header=FALSE, sep=","))
 
@@ -30,38 +31,26 @@ dados_custo_tempo <- as.matrix(read.csv(file="tempo.csv", header=FALSE, sep=",")
 # a partir de um algoritmo guloso.
 
 grau <- 1
-Xd <- t(solucao_inicial("distancia.csv",grau))
-colnames(Xd) <- c("destino", "custo")
-Xt <- t(solucao_inicial("tempo.csv",grau))
-colnames(Xt) <- c("destino", "custo")
-Xd <- data.frame(Xd)
-Xt <- data.frame(Xt)
-initcost_t <- sum(Xt$custo) #define custo inicial para o tempo
-initcost_d <- sum(Xd$custo) #define custo inicial para a distância
+X <- t(solucao_inicial("distancia.csv","tempo.csv",grau))
+dtemp <- X[,2]
+X[,2] <- X[,3]
+X[,3] <- dtemp
+colnames(X) <- c("destino", "custotempo", "custodistancia")
+X <- data.frame(X)
+X$custotempo[1] <- dados_custo_tempo[1,X$destino[1]]
 # Para imprimir o custo inicial
 # cat("Custo inicial para o tempo: ", initcost_t, "h.\nCusto inicial para a distância: ", initcost_d,"km. \n")
+
+# Limpa variáveis não mais úteis
+rm(grau,dtemp)
 
 ###################################################
 ###     BLOCO DO SIMULATED ANNEALING INICIAL    ###
 ###################################################
-
 # Realiza o SA
-xbest_t <- SA(X=Xt,dados_custo_tempo)
-xbest_d <- SA(X=Xd,dados_custo_distancia)
-X <- xbest_t
+solution <- SAmulti(X,dados_custo_tempo, dados_custo_distancia,0.5,0.5)
+xbest <- solutuion[[1]] # Melhor solução encontrada
+custos <- solution[[2]] # Variação do custo ao longo das iterações
 
-# Salva o custo final da melhor solução encontrada
-custod <- sum(xbest_d$custo)
-custot <- sum(xbest_t$custo)
-
-# Limpa variáveis não mais úteis
-rm(grau,Xd, Xt)
-
-###################################################
-###             BLOCO DAS SOLUÇÕES              ###
-###################################################
-
-# Plota custos e imprime o custo final e o custo inicial
-plot(1:length(costt), costt,type="l", xlab="",ylab="Custo", main="Evolução do custo ao longo do algoritmo SA")
-cat("Custo inicial: ", custoinicial, ".\n")
-cat("Custo final: ", custofinal,".\n")
+#Plota os custos
+plot(custos,type='l',ylab="Custos", main="Evolução dos custos ao longo do algoritmo")

@@ -1,6 +1,3 @@
-normalizando <- function(custo, mincusto, maxcusto){
-  (custo-mincusto)/(maxcusto-mincusto)
-}
 
 Xd <- xbest_d
 Xt <- xbest_t

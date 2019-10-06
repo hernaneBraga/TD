@@ -9,7 +9,30 @@
 
 # O algoritmo abaixo realiza o SA multiobjetivo para uma dada solução inicial X
 
-SAmulti <- function(X, dados_custo_tempo, dados_custo_distancia, w1, w2){
+#Função de normalização
+normalizando <- function(custo, mincusto, maxcusto){
+  (custo-mincusto)/(maxcusto-mincusto)
+}
+
+# SA multiobjetivo
+SAmulti <- function(X, dados_custo_tempo, dados_custo_distancia, wd, wt){
+  #Pré determina os custos mínimos com base no enunciado
+  mint <- 16.5
+  mind <- 1250
+  
+  #Define os custos máximos usando uma solucão inicial aleatória
+  Xrand <- sample(2:250)
+  maxd <- dados_custo_distancia[1,Xrand[1]] 
+  maxt <- dados_custo_tempo[1,Xrand[1]]
+  for (i in 1:(length(Xrand)-1)){
+    maxd <- c(maxd,dados_custo_distancia[Xrand[i],Xrand[i+1]])
+    maxt <- c(maxt,dados_custo_tempo[Xrand[i],Xrand[i+1]])
+  }
+  maxd <- c(maxd,dados_custo_distancia[Xrand[i+1],1])
+  maxt <- c(maxt,dados_custo_tempo[Xrand[i+1],1])
+  destino <- c(Xrand,1)
+  maxd <- sum(maxd)
+  maxt <- sum(maxt)
   
   # Calcula a temperatura inicial T0d e T0t com base na fórmula
   # e^-média(deltaE)/T0 = tau
@@ -17,48 +40,52 @@ SAmulti <- function(X, dados_custo_tempo, dados_custo_distancia, w1, w2){
   deltaEt <- NULL
   deltaEd <- NULL
   for (i in 1:100){
-    deltaEt <- c(deltaEt,(abs((sum(Vizinhanca(X, dados_custo_tempo, 1)$custo))) - (sum(X$custo))))
-    deltaEd <- c(deltaEd,(abs((sum(Vizinhanca(X, dados_custo_distancia, 1)$custo))) - (sum(X$custo))))
+    deltaEt <- c(deltaEt,(abs((sum(Vizinhanca(X, dados_custo_tempo,dados_custo_distancia, 1)$custotempo))) - (sum(X$custotempo))))
+    deltaEd <- c(deltaEd,(abs((sum(Vizinhanca(X, dados_custo_tempo,dados_custo_distancia, 1)$custodistancia))) - (sum(X$custodistancia))))
   }
   T0t <- -mean(deltaEt)/(log(tau))
   T0d <- -mean(deltaEd)/(log(tau))
-  rm(i, deltaEt, deltaEd)
-  
+  rm(tau,i, deltaEt, deltaEd)
+
   ###################################################
   ###       BLOCO DO SIMULATED ANNEALING          ###
   ###################################################
   
   # Constantes do SA
   seqi <- seq(0.00001,1,0.00001) # Usada para sortear um valor
-  costt <- custoinicial # Guarda os custos ao longo do algoritmo
   iteracao <- 0 # Valor das iterações totais feitas
   nivel <- 1 # Nível de perturbação vizinhança inicial (quanto maior, maior a diferença entre as soluções)
-  D0 <- 0.7 # Variação da temperatura inicial estática
-  Tkt <- T0t # Próxima temperatura do tempo
-  Tkd <- T0d # Próxima temperatura da distância
+  D0 <- 0.01 # Variação da temperatura inicial estática
+  Tkt <- T0t*0.001 # Próxima temperatura do tempo (começa já bem baixa)
+  Tkd <- T0d*0.001 # Próxima temperatura da distância (começa já bem baixa)
   m <- 1 # Valor das iterações que serão feitas para cada temperatura
   xbest <- X # Guarda a melhor solução
+  costt <- NULL
   
   # Looping do SA multiobjetivo
-  while (iteracao < 1000 && Tkt > (0.00001*T0t) && Tkd > (0.00001*T0d) && nivel<=6){
+  while (iteracao < 10000){
     aceitacao <- 0
     m <- 0
     menordeltaE <- Inf
     todosdeltaE <- NULL
+    deltaEt <- NULL
+    deltaEd <- NULL
     
     # Faz a repetição para cada mudança na temperatura
-    while (m <= 400 && aceitacao <= 20){
-      cost1 <- sum(X$custo) # Custo da solução atual
-      x1 <- Vizinhanca(X, dados_custo, nivel) # Encontra nova solução na vizinhança
-      cost2 <- sum(x1$custo) # Custo da nova solução
-      deltaE <- cost2 - cost1 # Calcula a diferença dos custos das soluções
+    while (m <= 1000 && aceitacao <= 20){
+      costold <- wd*normalizando(sum(X$custodistancia),mind, maxd)+wt*normalizando(sum(X$custotempo), mint, maxt) # Custo da solução atual
+      x1 <- Vizinhanca(X, dados_custo_tempo,dados_custo_distancia, nivel) # Encontra nova solução na vizinhança
+      costnew <- wd*normalizando(sum(x1$custodistancia),mind, maxd)+wt*normalizando(sum(x1$custotempo), mint, maxt) # Custo da nova solução
+      deltaE <- costnew - costold # Calcula a diferença dos custos das soluções
+      deltaEt <- sum(x1$custotempo)-sum(X$custotempo) # Calcula custo apenas em função do tempo
+      deltaEd <- sum(x1$custodistancia)-sum(X$custodistancia) # Calcula custo apenas em função da distância
       
       # Caso a vizinhança retorne uma solução idêntica
       while (deltaE == 0){
-        cost1 <- sum(X$custo)
-        x1 <- Vizinhanca(X, dados_custo, nivel)
-        cost2 <- sum(x1$custo)
-        deltaE <- cost2 - cost1
+        costold <- wd*normalizando(sum(X$custodistancia),mind, maxd)+wt*normalizando(sum(X$custotempo), mint, maxt)
+        x1 <- Vizinhanca(X, dados_custo_tempo,dados_custo_distancia, nivel)
+        costnew <- wd*normalizando(sum(x1$custodistancia),mind, maxd)+wt*normalizando(sum(x1$custotempo), mint, maxt)
+        deltaE <- costnew - costold
       }
       
       # Se a nova solução x1 for melhor que a anterior
@@ -69,12 +96,18 @@ SAmulti <- function(X, dados_custo_tempo, dados_custo_distancia, w1, w2){
         todosdeltaE <- c(todosdeltaE,deltaE) # Guarda todos os deltaE de soluções aceita
         aceitacao <- aceitacao +1 # Atualiza o contador de soluções aceitas
         X <- x1 # Atualiza a solução atual
-        if (sum(x1$custo) < sum(xbest$custo)) xbest <- x1 #Atualiza a melhor solução
-        costt <- c(costt,cost2) # Atualiza os custos encontrados
+        costbest <- wd*normalizando(sum(xbest$custodistancia),mind, maxd)+wt*normalizando(sum(xbest$custotempo), mint, maxt)
+        if (costnew < costbest) {
+          xbest <- x1 #Atualiza a melhor solução
+          Tkt <- T0t*0.001
+          Tkd <- T0d*0.001
+        }
+        costt <- c(costt,costnew) # Atualiza os custos encontrados
       }
       # Se a nova solução x1 for pior que a anterior
       else {
-        prob <- exp(-deltaE/Tk) # Calcula a probabilidade da solução ser aceita
+        prob <- exp(wd*deltaEd/Tkd)*exp(wt*deltaEt/Tkt) # Calcula a probabilidade da solução ser aceita
+        if (is.na(prob)) prob <- 0
         if (sample(seqi,1)<prob) { # Se for aceita, parte análoga ao caso de x1 ser melhor que X
           if (deltaE < menordeltaE) {
             menordeltaE <- deltaE
@@ -82,7 +115,7 @@ SAmulti <- function(X, dados_custo_tempo, dados_custo_distancia, w1, w2){
           todosdeltaE <- c(todosdeltaE,deltaE)
           aceitacao <- aceitacao +1
           X <- x1
-          costt <- c(costt,cost2)
+          costt <- c(costt,costnew)
         }
       }
       m <- m+1 # Contador de iterações por temperatura
@@ -90,23 +123,30 @@ SAmulti <- function(X, dados_custo_tempo, dados_custo_distancia, w1, w2){
     
     # Atualiza a temperatura com base na regra iterativa
     if (is.null(todosdeltaE)) {
-      Tk <- D0*Tk
+      Tkt <- D0*Tkt
+      Tkd <- D0*Tkd
     } else {
-      Tk <- min(abs(menordeltaE)/abs(mean(todosdeltaE)), D0)*Tk
+      Tkd <- min(abs(menordeltaE)/abs(mean(todosdeltaE)), D0)*Tkd
+      Tkt <- min(abs(menordeltaE)/abs(mean(todosdeltaE)), D0)*Tkt
     }
     
     # Se não foram aceitas nenhuma solução, aumenta o nível da vizinhança
     if (aceitacao<1) {
-      nivel <- nivel + 1
+      if (nivel < 6){
+        nivel <- nivel+1
+      } 
     }
     # Se foram aceitas quaisquer soluções, volta para a vizinhança de nível mais baixo
     # para tentar uma busca local
     if (aceitacao >= 1){
-      nivel <- 1
+      if (nivel > 1){
+        nivel <- 1
+      } 
     }
     
     iteracao <- iteracao + 1 # Incrementa a iteração total do algoritmo
+    # Acompanha iteração no console (pra ver se não caiu num looping infinito)
+    cat("iteracao: ", iteracao, "\n")
   }
-  
-  return (xbest)
+  return (list(xbest, costt))
 }

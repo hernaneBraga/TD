@@ -70,8 +70,8 @@ DeslocamentoSD <- function(solucao_atual, dados_tempo, dados_distancia, num_desl
     prox_vizinho1    <- solucao_atual$destino[cidade]
     
     # A cidade escolhida eh retirada do caminho.
-    nova_solucao[vizinho_anterior,] <- c(prox_vizinho1, dados_custo[vizinho_anterior, prox_vizinho1])
-    
+    nova_solucao[vizinho_anterior,] <- c(prox_vizinho1, dados_tempo[vizinho_anterior, prox_vizinho1], dados_distancia[vizinho_anterior, prox_vizinho1])
+     
     # Ela sera deslocada 2 a 5 posicoes para frente. O 'for' percorre o caminho para isso.
     delta_desloc <- sample(2:5, 1)
     for (j in 1:(delta_desloc-1)) {
