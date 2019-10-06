@@ -48,6 +48,7 @@ initcost_d <- sum(Xd$custo) #define custo inicial para a distância
 # Realiza o SA
 xbest_t <- SA(X=Xt,dados_custo_tempo)
 xbest_d <- SA(X=Xd,dados_custo_distancia)
+X <- xbest_t
 
 # Salva o custo final da melhor solução encontrada
 custod <- sum(xbest_d$custo)
