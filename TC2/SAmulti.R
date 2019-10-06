@@ -55,9 +55,9 @@ SAmulti <- function(X, dados_custo_tempo, dados_custo_distancia, wd, wt){
   seqi <- seq(0.00001,1,0.00001) # Usada para sortear um valor
   iteracao <- 0 # Valor das iterações totais feitas
   nivel <- 1 # Nível de perturbação vizinhança inicial (quanto maior, maior a diferença entre as soluções)
-  D0 <- 0.01 # Variação da temperatura inicial estática
-  Tkt <- T0t*0.001 # Próxima temperatura do tempo (começa já bem baixa)
-  Tkd <- T0d*0.001 # Próxima temperatura da distância (começa já bem baixa)
+  D0 <- 0.9 # Variação da temperatura inicial estática
+  Tkt <- T0t # Próxima temperatura do tempo (começa já bem baixa)
+  Tkd <- T0d # Próxima temperatura da distância (começa já bem baixa)
   m <- 1 # Valor das iterações que serão feitas para cada temperatura
   xbest <- X # Guarda a melhor solução
   costt <- NULL
@@ -72,7 +72,7 @@ SAmulti <- function(X, dados_custo_tempo, dados_custo_distancia, wd, wt){
     deltaEd <- NULL
     
     # Faz a repetição para cada mudança na temperatura
-    while (m <= 1000 && aceitacao <= 20){
+    while (m <= 20 && aceitacao <= 15){
       costold <- wd*normalizando(sum(X$custodistancia),mind, maxd)+wt*normalizando(sum(X$custotempo), mint, maxt) # Custo da solução atual
       x1 <- Vizinhanca(X, dados_custo_tempo,dados_custo_distancia, nivel) # Encontra nova solução na vizinhança
       costnew <- wd*normalizando(sum(x1$custodistancia),mind, maxd)+wt*normalizando(sum(x1$custotempo), mint, maxt) # Custo da nova solução
@@ -106,7 +106,7 @@ SAmulti <- function(X, dados_custo_tempo, dados_custo_distancia, wd, wt){
       }
       # Se a nova solução x1 for pior que a anterior
       else {
-        prob <- exp(wd*deltaEd/Tkd)*exp(wt*deltaEt/Tkt) # Calcula a probabilidade da solução ser aceita
+        prob <- min(D0,exp(-deltaEd/Tkd))*min(D0,exp(-deltaEt*Tkt)) # Calcula a probabilidade da solução ser aceita
         if (is.na(prob)) prob <- 0
         if (sample(seqi,1)<prob) { # Se for aceita, parte análoga ao caso de x1 ser melhor que X
           if (deltaE < menordeltaE) {

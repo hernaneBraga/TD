@@ -30,7 +30,7 @@ dados_custo_tempo <- as.matrix(read.csv(file="tempo.csv", header=FALSE, sep=",")
 # Valores menores significam uma solução mais próxima da solução obtida
 # a partir de um algoritmo guloso.
 
-grau <- 5
+grau <- 3
 X <- t(solucao_inicial("distancia.csv","tempo.csv",grau))
 dtemp <- X[,2]
 X[,2] <- X[,3]
