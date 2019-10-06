@@ -10,12 +10,12 @@
 # O algoritmo abaixo pode ser rodado como um todo ou em blocos, conforme dividido a seguir.
 # É aconselhável a limpeza do ambiente antes da execução do algoritmo, usando a função abaixo.
 rm(list=ls())
+start_time <- Sys.time()
 
 # Importando Bibliotecas, arquivos necessários e os dados
 # Aqui deve ser definido se o arquivo distancia.csv ou o arquivo tempo.csv
 # serão utilizados na otimizacao.
 source('solucao_inicial_dst_tempo.R')
-source("solucao_inicial_gulosa.R")
 source('vizinhanca2.R')
 source('SAmulti.R')
 dados_custo_distancia <- as.matrix(read.csv(file="distancia.csv", header=FALSE, sep=","))
@@ -30,7 +30,7 @@ dados_custo_tempo <- as.matrix(read.csv(file="tempo.csv", header=FALSE, sep=",")
 # Valores menores significam uma solução mais próxima da solução obtida
 # a partir de um algoritmo guloso.
 
-grau <- 3
+grau <- 1
 X <- t(solucao_inicial("distancia.csv","tempo.csv",grau))
 dtemp <- X[,2]
 X[,2] <- X[,3]
@@ -44,13 +44,25 @@ X$custotempo[1] <- dados_custo_tempo[1,X$destino[1]] #corrige função do hernan
 # Limpa variáveis não mais úteis
 rm(grau,dtemp)
 
+
 ###################################################
 ###     BLOCO DO SIMULATED ANNEALING INICIAL    ###
 ###################################################
 # Realiza o SA
-solution <- SAmulti(X,dados_custo_tempo, dados_custo_distancia,0.5,0.5)
+solution <- SAmulti(X,dados_custo_tempo, dados_custo_distancia,wd=0.5,wt = 0.5)
 xbest <- solution[[1]] # Melhor solução encontrada
 custos <- solution[[2]] # Variação do custo ao longo das iterações
+end_time <- Sys.time()
 
-#Plota os custos
+
+###################################################
+###           BLOCO DOS RESULTADOS              ###
+###################################################
+
+# Plota os custos
 plot(custos,type='l',ylab="Custos", main="Evolução dos custos ao longo do algoritmo")
+
+# Imprime resultados
+cat(" Custos iniciais: ", sum(X$custotempo), "h e ", sum(X$custodistancia), "km.\n",
+    "Custos finais:   ", sum(xbest$custotempo), "h e ", sum(xbest$custodistancia), "km.\n")
+cat("Tempo de execução: ", end_time-start_time, "min.")

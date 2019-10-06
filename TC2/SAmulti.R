@@ -63,7 +63,7 @@ SAmulti <- function(X, dados_custo_tempo, dados_custo_distancia, wd, wt){
   costt <- NULL
   
   # Looping do SA multiobjetivo
-  while (iteracao < 10000){
+  while (iteracao < 20000){
     aceitacao <- 0
     m <- 0
     menordeltaE <- Inf

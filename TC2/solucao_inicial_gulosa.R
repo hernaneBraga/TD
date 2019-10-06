@@ -18,8 +18,8 @@ i <- dados[[1]] #Marca a primeira cidade visitada
 
 #Algoritmo Guloso (vai procurar a melhor cidade da lista de possíveis e ir para ela)
 for (j in 1:248){
-  indice <- min(listapossiveis[which(as.numeric(tempo[i,listapossiveis]) == 
-                                       min(as.numeric(tempo[i,listapossiveis])))]) #melhor cidade para ir
+  indice <- min(listapossiveis[which(as.numeric(distancias[i,listapossiveis]) == 
+                                       min(as.numeric(distancias[i,listapossiveis])))]) #melhor cidade para ir
   dados[[1]][i] <- indice #adiciona cidade ao vetor de dados
   dados[[2]][i] <- tempo[i,indice] #adiciona a distancia para essa cidade
   dados[[3]][i] <- distancias[i,indice]
