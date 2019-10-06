@@ -30,14 +30,14 @@ dados_custo_tempo <- as.matrix(read.csv(file="tempo.csv", header=FALSE, sep=",")
 # Valores menores significam uma solução mais próxima da solução obtida
 # a partir de um algoritmo guloso.
 
-grau <- 1
+grau <- 5
 X <- t(solucao_inicial("distancia.csv","tempo.csv",grau))
 dtemp <- X[,2]
 X[,2] <- X[,3]
 X[,3] <- dtemp
 colnames(X) <- c("destino", "custotempo", "custodistancia")
 X <- data.frame(X)
-X$custotempo[1] <- dados_custo_tempo[1,X$destino[1]]
+X$custotempo[1] <- dados_custo_tempo[1,X$destino[1]] #corrige função do hernane
 # Para imprimir o custo inicial
 # cat("Custo inicial para o tempo: ", initcost_t, "h.\nCusto inicial para a distância: ", initcost_d,"km. \n")
 
