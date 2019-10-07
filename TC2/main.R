@@ -58,7 +58,8 @@ start_time <- Sys.time()
 
 # Roda o algoritmo cinco vezes, como pedido na descrição do trabalho
 for (k in 1:5){
-# Realiza o SA
+  
+# Realiza o SA no método Pw para vários pesos
 seqj <- seq(0.02,0.98,0.02)
 candidatas <- array(0,c(2,length(seqj)))
 contador <- 1
@@ -73,25 +74,46 @@ todassaidas[[k]] <- saida # Salva todas as saídas Pareto Ótimas de cada itera�
 # Plota as superfícies Pareto Ótimas de cada iteração
 plot (saida[1,],saida[2,], col=cores[k],xlab="Custo do Tempo", ylab="Custo da Distância", xlim=c(25.5,32), ylim=c(1520,1750))
 par(new=T)
+
 }
 par(new=F)
+
 end_time <- Sys.time()
 
 ###################################################
 ###      BLOCO DO SIMULATED ANNEALING PE        ###
 ###################################################
-  # Define o epsilon
-  
-  if (((sum(X$custotempo) - 16.5)/sum(X$custotempo)) >= ((sum(X$custodistancia) - 1225)/sum(X$custodistancia))){
-    epsilon <- sum(X$custodistancia)
-  } else {
-    epsilon <- sum(X$custotempo)
-  }
 
-  # Realiza o SA
+# Variáveis auxiliares
+todassaidas <- list()
+cores <- rainbow(5)
+start_time <- Sys.time()
+
+# Roda o algoritmo cinco vezes, como pedido na descrição do trabalho
+for (k in 1:5){
+
+# Realiza o SA no método Pe para vários epsilons
+epsilonrange <- seq(1580,1640,2)
+candidatas <- array(0,c(2,(length(epsilonrange)*2)))
+contador <- 1 
+for (epsilon in epsilonrange){
     solution <- SAmultiER(X,dados_custo_tempo, dados_custo_distancia,epsilon = epsilon, maxit = 1000)
     candidatas[,contador] <- c(sum(solution[[1]]$custotempo),sum(solution[[1]]$custodistancia))
     contador <- contador+1
-  xbest <- solution[[1]] # Melhor solução encontrada
-  custos <- solution[[2]] # Variação do custo ao longo das iterações
-  end_time <- Sys.time()
+}
+epsilonrange <- seq(28,34,0.2)
+for (epsilon in epsilonrange){
+  solution <- SAmultiER(X,dados_custo_tempo, dados_custo_distancia,epsilon = epsilon, maxit = 1000)
+  candidatas[,contador] <- c(sum(solution[[1]]$custotempo),sum(solution[[1]]$custodistancia))
+  contador <- contador+1
+}
+saida <- ConfereDominancia(candidatas)
+todassaidas[[k]] <- saida # Salva todas as saídas Pareto Ótimas de cada iteração
+
+plot (saida[1,],saida[2,], col=cores[k],xlab="Custo do Tempo", ylab="Custo da Distância", xlim=c(28,34), ylim=c(1450,1650))
+par(new=T)
+
+}
+par(new=F)
+
+end_time <- Sys.time()
