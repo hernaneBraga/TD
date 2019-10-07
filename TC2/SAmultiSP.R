@@ -7,16 +7,22 @@
 # DATA: Outubro/2019                               
 # TC1 - Otimizacao multi-objetivo do PCV
 
-# O algoritmo abaixo realiza o SA multiobjetivo para uma dada solução inicial X
+# O algoritmo abaixo realiza o SA multiobjetivo utilizando a abordagem
+# de Somas Ponderadas para uma dada solução inicial X
 
 #Função de normalização
 normalizando <- function(custo, mincusto, maxcusto){
   (custo-mincusto)/(maxcusto-mincusto)
 }
 
-# SA multiobjetivo
-SAmulti <- function(X, dados_custo_tempo, dados_custo_distancia, wd, wt, maxit){
-  #Pré determina os custos mínimos com base no enunciado
+# SA multiobjetivo PW
+SAmultiSP <- function(X, dados_custo_tempo, dados_custo_distancia, wd, wt, maxit){
+  
+  ###################################################
+  ###       BLOCO DAS CONSTANTES INICIAIS         ###
+  ###################################################
+  
+  # Pré determina os custos mínimos com base no enunciado
   mint <- 16.5
   mind <- 1250
   
@@ -55,7 +61,7 @@ SAmulti <- function(X, dados_custo_tempo, dados_custo_distancia, wd, wt, maxit){
   seqi <- seq(0.00001,1,0.00001) # Usada para sortear um valor
   iteracao <- 0 # Valor das iterações totais feitas
   nivel <- 1 # Nível de perturbação vizinhança inicial (quanto maior, maior a diferença entre as soluções)
-  D0 <- 0.9 # Variação da temperatura inicial estática
+  D0 <- 0.8 # Variação da temperatura inicial estática
   Tkt <- T0t # Próxima temperatura do tempo (começa já bem baixa)
   Tkd <- T0d # Próxima temperatura da distância (começa já bem baixa)
   m <- 1 # Valor das iterações que serão feitas para cada temperatura
@@ -63,7 +69,7 @@ SAmulti <- function(X, dados_custo_tempo, dados_custo_distancia, wd, wt, maxit){
   costt <- NULL
 
   # Looping do SA multiobjetivo
-  while (iteracao < maxit && Tkt > 0.0000001*T0t && Tkd > 0.0000001*T0d){
+  while (iteracao < maxit && Tkt > 0.00001*T0t && Tkd > 0.00001*T0d){
     aceitacao <- 0
     m <- 0
     menordeltaE <- Inf
@@ -86,6 +92,8 @@ SAmulti <- function(X, dados_custo_tempo, dados_custo_distancia, wd, wt, maxit){
         x1 <- Vizinhanca(X, dados_custo_tempo,dados_custo_distancia, nivel)
         costnew <- wd*normalizando(sum(x1$custodistancia),mind, maxd)+wt*normalizando(sum(x1$custotempo), mint, maxt)
         deltaE <- costnew - costold
+        deltaEt <- sum(x1$custotempo)-sum(X$custotempo) # Calcula custo apenas em função do tempo
+        deltaEd <- sum(x1$custodistancia)-sum(X$custodistancia) # Calcula custo apenas em função da distância
       }
       
       # Se a nova solução x1 for melhor que a anterior
@@ -122,7 +130,7 @@ SAmulti <- function(X, dados_custo_tempo, dados_custo_distancia, wd, wt, maxit){
       m <- m+1 # Contador de iterações por temperatura
     }
     
-    # Atualiza a temperatura com base na regra iterativa
+    # Atualiza as temperaturas com base na regra iterativa
     if (is.null(todosdeltaE)) {
       Tkt <- D0*Tkt
       Tkd <- D0*Tkd
@@ -146,8 +154,8 @@ SAmulti <- function(X, dados_custo_tempo, dados_custo_distancia, wd, wt, maxit){
     }
     
     iteracao <- iteracao + 1 # Incrementa a iteração total do algoritmo
-    # Acompanha iteração no console (pra ver se não caiu num looping infinito)
-    cat("iteracao: ", iteracao, "\n")
   }
+  
+  # Retorna uma lista contendo o melhor resultado encontrado e os custos do algoritmo ao longo do SA
   return (list(xbest, costt))
 }

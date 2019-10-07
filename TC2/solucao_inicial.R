@@ -48,7 +48,7 @@ vetor_aux[1,] <- seq(1, n, 1)  # indice das cidades
 vetor_aux[2,] <- dados_dst[cidade_atual, ]   # custo de distancia
 vetor_aux[3,] <- dados_tempo[cidade_atual, ] # custo de tempo
 
-g <- 2 # g é função que deseja ordenar
+g <- 2 # g ? fun??o que deseja ordenar
        # g = 2 (distancia) ; g = 3 (tempo)
 
 vetor_aux <- vetor_aux[,order(vetor_aux[g,])] # Ordena o vetor 
