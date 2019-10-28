@@ -78,7 +78,7 @@ SAmultiSP <- function(X, dados_custo_tempo, dados_custo_distancia, wd, wt, maxit
     deltaEd <- NULL
    
     # Faz a repetição para cada mudança na temperatura
-    while (m <= 20 && aceitacao <= 15){
+    while (m <= 200 && aceitacao <= 15){
       costold <- wd*normalizando(sum(X$custodistancia),mind, maxd)+wt*normalizando(sum(X$custotempo), mint, maxt) # Custo da solução atual
       x1 <- Vizinhanca(X, dados_custo_tempo,dados_custo_distancia, nivel) # Encontra nova solução na vizinhança
       costnew <- wd*normalizando(sum(x1$custodistancia),mind, maxd)+wt*normalizando(sum(x1$custotempo), mint, maxt) # Custo da nova solução

@@ -51,5 +51,5 @@ rm(grau,dtemp)
 ###      BLOCO DO SIMULATED ANNEALING PW        ###
 ###################################################
 
-alternativas <- EncontraSolucoes(solInicial = X,dados_custo_tempo=dados_custo_tempo, 
-                                 dados_custo_distancia=dados_custo_distancia,maxit=1000)
+alternativas <- ConfereDominancia(EncontraSolucoes(solInicial = X,dados_custo_tempo=dados_custo_tempo, 
+                                 dados_custo_distancia=dados_custo_distancia,maxit=1000))
