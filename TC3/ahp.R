@@ -68,7 +68,7 @@ for (i in 1:num_criteria) {
   best_alt  <- criteria[[i]][ordem[1]]
   worst_alt <- criteria[[i]][ordem[num_alts]]
   alternatives_norm <- 1 + 8*(criteria[[i]] - best_alt)/(worst_alt - best_alt)
-  alternatives_matrix[[i]] <- matrix(0, 10, 10)
+  alternatives_matrix[[i]] <- matrix(0, num_alts, num_alts)
   for (j in 1:num_alts) {
     alternatives_matrix[[i]][j,] <- alternatives_norm/alternatives_norm[j]
   }
