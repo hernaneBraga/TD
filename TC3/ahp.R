@@ -11,15 +11,17 @@
 # Bloco de leitura das alternativas Pareto-otimas obtidos pelo SA multiobjetivo e
 # conversao para os criterios escolhidos. 1- Menor distancia total; 2- Menor tempo 
 # total; 3- Menor desvio padrao das distancias; 4- Menor desvio padrao dos tempos
+# 5- Tempo maximo entre cidades limitado a 1.3h
 
 solutions <- read.table("alternativas.txt")
-num_criteria <- 4
-criteria <- data.frame(total_dist = numeric(10),
-                       total_time = numeric(10),
-                       dist_sd    = numeric(10),
-                       time_sd    = numeric(10))
-
 num_alts <- length(solutions)/3
+num_criteria <- 5
+criteria <- data.frame(total_dist = numeric(num_alts),
+                       total_time = numeric(num_alts),
+                       dist_sd    = numeric(num_alts),
+                       time_sd    = numeric(num_alts),
+                       time_limit = numeric(num_alts))
+
 alternatives <- list()
 for (i in 0:(num_alts-1)) {
   alternatives[[i+1]] <- as.data.frame(solutions[,(i*3+1):(i*3+3)])
@@ -29,18 +31,20 @@ for (i in 0:(num_alts-1)) {
   criteria$total_time[i+1] <- sum(alternatives[[i+1]]$tempo)
   criteria$dist_sd[i+1]    <- sd(alternatives[[i+1]]$distancia)
   criteria$time_sd[i+1]    <- sd(alternatives[[i+1]]$tempo)
+  criteria$time_limit[i+1] <- sum(alternatives[[i+1]]$tempo > 1.3)
 }
 
 ###############################################################################
 # Bloco de definicao das relacoes entre os criterios escolhidos
 
-criteria_matrix <- t(matrix(c(1,   1,   5, 5, 
-                              1,   1,   5, 5, 
-                              0.2, 0.2, 1, 1, 
-                              0.2, 0.2, 1, 1), 4, 4))
+criteria_matrix <- t(matrix(c(1,    1,    4,   4,   6,
+                              1,    1,    4,   4,   6,
+                              0.25, 0.25, 1,   1,   3,
+                              0.25, 0.25, 1,   1,   3,
+                              0.15, 0.15, 0.4, 0.4, 1), num_criteria, num_criteria))
 
-colnames(criteria_matrix) <- c("total_dist", "total_time", "dist_sd", "time_sd")
-rownames(criteria_matrix) <- c("total_dist", "total_time", "dist_sd", "time_sd")
+colnames(criteria_matrix) <- c("total_dist", "total_time", "dist_sd", "time_sd", "time_limit")
+rownames(criteria_matrix) <- c("total_dist", "total_time", "dist_sd", "time_sd", "time_limit")
 
 lambda_max <- as.numeric(eigen(criteria_matrix)$values[1]) # O primeiro eh o autovalor maximo
 criteria_inconsistency <- (lambda_max - num_criteria)/(num_criteria - 1) # Inconsistencia da matriz de criterios
@@ -50,7 +54,7 @@ if(criteria_inconsistency > 0.1){
 
 eigenvector <- as.numeric(eigen(criteria_matrix)$vectors[,1]) # Autovetor direito principal
 criteria_matrix <- cbind(criteria_matrix, eigenvector/sum(eigenvector)) # Prioridades dos criterios (autovetor normalizados)
-colnames(criteria_matrix)[5] <- "prioridade"
+colnames(criteria_matrix)[num_criteria+1] <- "prioridade"
 
 ###############################################################################
 # Bloco de definicao das relacoes entre as alternativas dados os criterios
