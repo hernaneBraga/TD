@@ -1,17 +1,22 @@
 ###############################################################################
-# UNIVERSIDADE FEDERAL DE MINAS GERAIS                            
-# BACHARELADO EM ENGENHARIA DE SISTEMAS                           
-# DISCIPLINA: ELE088 Teoria da Decisao                            
-# PROFESSOR: Lucas de Souza Batista                               
-# ALUNOs: Ariel Domingues, Hernane Braga e Nikolas Fantoni        
-# DATA: Novembro/2019                               
+# UNIVERSIDADE FEDERAL DE MINAS GERAIS
+# BACHARELADO EM ENGENHARIA DE SISTEMAS
+# DISCIPLINA: ELE088 Teoria da Decisao
+# PROFESSOR: Lucas de Souza Batista
+# ALUNOs: Ariel Domingues, Hernane Braga e Nikolas Fantoni
+# DATA: Novembro/2019
 # TC3 - Tomada de Decisão Multicritério no PCV
 
 ###############################################################################
+# AHP
+
+###############################################################################
 # Bloco de leitura das alternativas Pareto-otimas obtidos pelo SA multiobjetivo e
-# conversao para os criterios escolhidos. 1- Menor distancia total; 2- Menor tempo 
+# conversao para os criterios escolhidos. 1- Menor distancia total; 2- Menor tempo
 # total; 3- Menor desvio padrao das distancias; 4- Menor desvio padrao dos tempos
 # 5- Tempo maximo entre cidades limitado a 1.3h
+
+rm(list=ls())
 
 solutions <- read.table("alternativas.txt")
 num_alts <- length(solutions)/3
@@ -26,22 +31,22 @@ alternatives <- list()
 for (i in 0:(num_alts-1)) {
   alternatives[[i+1]] <- as.data.frame(solutions[,(i*3+1):(i*3+3)])
   colnames(alternatives[[i+1]]) <- c("destino", "tempo", "distancia")
-  
+
   criteria$total_dist[i+1] <- sum(alternatives[[i+1]]$distancia)
   criteria$total_time[i+1] <- sum(alternatives[[i+1]]$tempo)
   criteria$dist_sd[i+1]    <- sd(alternatives[[i+1]]$distancia)
   criteria$time_sd[i+1]    <- sd(alternatives[[i+1]]$tempo)
-  criteria$time_limit[i+1] <- sum(alternatives[[i+1]]$tempo > 1.3)
+  criteria$time_limit[i+1] <- max(1*(alternatives[[i+1]]$tempo > 1.3))
 }
 
 ###############################################################################
 # Bloco de definicao das relacoes entre os criterios escolhidos
 
-criteria_matrix <- t(matrix(c(1,    1,    4,   4,   6,
-                              1,    1,    4,   4,   6,
-                              0.25, 0.25, 1,   1,   3,
-                              0.25, 0.25, 1,   1,   3,
-                              0.15, 0.15, 0.4, 0.4, 1), num_criteria, num_criteria))
+criteria_matrix <- t(matrix(c(1,   1,   5,   5,   3,
+                              1,   1,   5,   5,   3,
+                              0.2, 0.2, 1,   1,   0.7,
+                              0.2, 0.2, 1,   1,   0.7,
+                              0.4, 0.4, 2.5, 2.5, 1), num_criteria, num_criteria))
 
 colnames(criteria_matrix) <- c("total_dist", "total_time", "dist_sd", "time_sd", "time_limit")
 rownames(criteria_matrix) <- c("total_dist", "total_time", "dist_sd", "time_sd", "time_limit")
@@ -58,24 +63,25 @@ colnames(criteria_matrix)[num_criteria+1] <- "prioridade"
 
 ###############################################################################
 # Bloco de definicao das relacoes entre as alternativas dados os criterios
-# Todos os criterios buscam o minimo possivel. Podemos analisar a ordem e normalizar a nota entre 1 e 9, 
+# Todos os criterios buscam o minimo possivel. Podemos analisar a ordem e normalizar a nota entre 1 e 9,
 # sendo 1 para a alternativa com o menor valor do criterio e 9 para a com o maior.
 
 alternatives_matrix <- list()
 alternatives_inconsistency <- numeric(num_criteria)
 for (i in 1:num_criteria) {
-  ordem <- order(criteria[[i]])
-  best_alt  <- criteria[[i]][ordem[1]]
-  worst_alt <- criteria[[i]][ordem[num_alts]]
-  alternatives_norm <- 1 + 8*(criteria[[i]] - best_alt)/(worst_alt - best_alt)
-  alternatives_matrix[[i]] <- matrix(0, num_alts, num_alts)
-  for (j in 1:num_alts) {
-    alternatives_matrix[[i]][j,] <- alternatives_norm/alternatives_norm[j]
+  best_alt  <- min(criteria[[i]])
+  worst_alt <- max(criteria[[i]])
+  alternatives_matrix[[i]] <- matrix(1, num_alts, num_alts)
+  if(worst_alt - best_alt != 0){
+    alternatives_norm <- 1 + 8*(criteria[[i]] - best_alt)/(worst_alt - best_alt)
+    for (j in 1:num_alts) {
+      alternatives_matrix[[i]][j,] <- alternatives_norm/alternatives_norm[j]
+    }
   }
-  
+
   lambda_max <- as.numeric(eigen(alternatives_matrix[[i]])$values[1]) # O primeiro eh o autovalor maximo
   alternatives_inconsistency[i] <- (lambda_max - num_alts)/(num_alts - 1)# Inconsistencia das matrizes de alternativas
-  
+
   eigenvector <- as.numeric(eigen(alternatives_matrix[[i]])$vectors[,1])
   alternatives_matrix[[i]] <- cbind(alternatives_matrix[[i]], eigenvector/sum(eigenvector)) # Prioridades das alternativas
   colnames(alternatives_matrix[[i]]) <- c(1:num_alts, "prioridade")
