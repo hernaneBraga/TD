@@ -18,11 +18,7 @@
 #electree <- function(solucoes){
   
   #Pesos para o Electree
-  w1 <- 0.2
-  w2 <- 0.2
-  w3 <- 0.4
-  w4 <- 0.4
-  w5 <- 0.5
+  w <- c(0.35225230, 0.35225230, 0.07323682, 0.07323682, 0.14902177)
   delta <- 20
   
   
@@ -68,8 +64,8 @@
   for (i in 1:length(solucoes)){
     for (j in 1:length(solucoes)){
       if (i != j){
-       Jplus[i,j] <- w1*(c1[i] > c1[j])+w2*(c2[i] > c2[j])+
-          w3*(c3[i] > c3[j])+w4*(c4[i] > c4[j]+w5*(c5[i] > c5[j]))
+       Jplus[i,j] <- w[1]*(c1[i] > c1[j])+w[2]*(c2[i] > c2[j])+
+          w[3]*(c3[i] > c3[j])+w[4]*(c4[i] > c4[j]+w[5]*(c5[i] > c5[j]))
       }
     }
   }
@@ -77,8 +73,8 @@
   for (i in 1:length(solucoes)){
     for (j in 1:length(solucoes)){
       if (i != j){
-        Jequal[i,j] <- w1*(c1[i] == c1[j])+w2*(c2[i] == c2[j])+
-          w3*(c3[i] == c3[j])+w4*(c4[i] == c4[j])+ w5*(c5[i] == c5[j])
+        Jequal[i,j] <- w[1]*(c1[i] == c1[j])+w[2]*(c2[i] == c2[j])+
+          w[3]*(c3[i] == c3[j])+w[4]*(c4[i] == c4[j])+ w[5]*(c5[i] == c5[j])
       }
     }
   }
@@ -86,12 +82,12 @@
   for (i in 1:length(solucoes)){
     for (j in 1:length(solucoes)){
       if (i != j){
-        Jminus[i,j] <- w1*(c1[i] < c1[j])+w2*(c2[i] < c2[j])+
-          w3*(c3[i] < c3[j])+w4*(c4[i] < c4[j])+w5*(c5[i] < c5[j])
+        Jminus[i,j] <- w[1]*(c1[i] < c1[j])+w[2]*(c2[i] < c2[j])+
+          w[3]*(c3[i] < c3[j])+w[4]*(c4[i] < c4[j])+w[5]*(c5[i] < c5[j])
       }
     }
   }
-  Concordancia <- Jplus+Jequal/(w1+w2+w3+w4)
+  Concordancia <- Jplus+Jequal/sum(w)
   Discordancia <- matrix(0,ncol=length(solucoes),nrow=length(solucoes))
   for (i in 1:length(solucoes)){
     for (j in 1:length(solucoes)){
@@ -107,7 +103,7 @@
   for (i in 1:length(solucoes)){
     for (j in 1:length(solucoes)){
       if (i!=j){
-        if (Concordancia[i,j] >= 0.70 && Discordancia[i,j] <= 0.30){
+        if (Concordancia[i,j] >= 0.60 && Discordancia[i,j] <= 0.40){
           Sobreclassificacao[i,j]<-1
         }
       }

@@ -98,7 +98,8 @@ for (i in 1:num_alts){
 }
 
 # Matriz de sobreclassificacao
+colnames(Sobreclassificacao) <- c("a1","a2", "a3","a4","a5", "a6","a7","a8", "a9","a10","a11")
+rownames(Sobreclassificacao) <- c("a1","a2", "a3","a4","a5", "a6","a7","a8", "a9","a10","a11")
 Sobreclassificacao
-
 # # Pseudo-ordem de classificacao (algumas alternativas podem ser incomparaveis)
 #order(-(rowSums(Sobreclassificacao) - colSums(Sobreclassificacao)))
