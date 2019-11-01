@@ -53,3 +53,5 @@ rm(grau,dtemp)
 
 alternativas <- ConfereDominancia(EncontraSolucoes(solInicial = X,dados_custo_tempo=dados_custo_tempo, 
                                  dados_custo_distancia=dados_custo_distancia,maxit=1000))
+
+write.table(alternativas, "alternativas.txt")
