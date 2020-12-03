@@ -1,2 +1,6 @@
-# Teoria da Decisão (TD)
-Repositório para os trabalhos desenvolvidos durante a disciplina de teoria da decisão na Universidade Federal de Minas Gerais (UFMG) no 2° semestre de 2019. O código final pode ser visto na pasta TC3 e os texto final e apresentação nos arquivos _Artigo.pdf_ e _Apresentacao.pdf_.
+# Decision Theory course - TSP Problem
+This repository has the project implemented at the decision theory course at UFMG semester 2019/2. The project is to solve the TSP problem with 25 cities using the Simulated annealing (SA) metaheuristic algorithm, and then using the decision theory algorithms AHP, ELECTRE I, and PROMETHEE II to choose the best solution.
+
+TC 1 folder: Solves the TSP Problem as a mono-objective problem for distance and time between cities.
+TC 2 folder: Solves the TSP Problem as a multi-objective problem for distance and time between cities.
+TC 3 folder: Choosing the best solution using the three decision theory algorithms: AHP, ELECTRE I, and PROMETHEE II. 
